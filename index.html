@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<h1><center>Mapping Live Earthquake Data<center></h1>
+		<script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.js'></script>
+		<link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.50.0/mapbox-gl.css' rel='stylesheet' />
+		<link rel="stylesheet" href="Lab4.css"/>
+	</head>
+
+	<body>
+		<div class="row">
+		    <div class="column">
+		<div id='map' style='width: 700px; height: 600px; margin: bottom;'></div>
+		<div id='map2' style='width: 700px; height: 600px;'></div>
+		<script>
+			mapboxgl.accessToken = 'pk.eyJ1Ijoic29waGllYnJvb2tzIiwiYSI6ImNrMnRlMHp4dzFhZjUzZHVpbTU4NGdtNzAifQ.otHIDTG44NYlG-DJXSQKSQ';
+
+			var map = new mapboxgl.Map({
+			    container: 'map',
+			    style: 'mapbox://styles/sophiebrooks/ck3gkd8iv07441co0nf9yp9ai',
+			    center: [-122, 47],
+			    zoom: 2
+			});
+			map.on('load', function(){
+							map.addSource('equakes', {
+										"type": "geojson",
+										"data": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_week.geojson"
+								});
+
+								map.addLayer({
+									"id":"earthquakes",
+									"type":"circle",
+									"source":"equakes",
+									'paint': {
+                    'circle-radius': 5,
+                    'circle-color': '#ff4d4d'
+									}
+								});
+						});
+						map.on('click', 'earthquakes', function (e) {
+						var coordinates = e.features[0].geometry.coordinates;
+						var description = "<h3>"+e.features[0].properties.title+"</h3>"+"<p>Magnitude: " + e.features[0].properties.mag + "<br>Status: " + e.features[0].properties.status + "<br> Tsunami: " + e.features[0].properties.tsunami + "<br>Details: " + "<a target='_blank' href='" + e.features[0].properties.detail + "'>Click here</a>";
+						new mapboxgl.Popup()
+										.setLngLat(coordinates)
+										.setHTML(description)
+										.addTo(map);
+			});
+			map.addControl(new mapboxgl.NavigationControl());
+			map.addControl(new mapboxgl.FullscreenControl());
+
+			mapboxgl.accessToken = 'pk.eyJ1Ijoic29waGllYnJvb2tzIiwiYSI6ImNrMnRlMHp4dzFhZjUzZHVpbTU4NGdtNzAifQ.otHIDTG44NYlG-DJXSQKSQ';
+			var map2 = new mapboxgl.Map({
+			    container: 'map2',
+			    style: 'mapbox://styles/sophiebrooks/ck3gluv1z06d21cqs9rjm3mxm',
+			    center: [-122, 47],
+			    zoom: 2
+			});
+			map2.on('load', function(){
+
+							map2.addSource('significantquakes', {
+										"type": "geojson",
+										"data": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson"
+								});
+
+								map2.addLayer({
+									"id":"sigquakes",
+									"type":"circle",
+									"source":"significantquakes"
+								});
+						});
+						map2.on('click', 'sigquakes', function (e) {
+						var coordinates = e.features[0].geometry.coordinates;
+						var description = "<h3>"+e.features[0].properties.title+"</h3>"+"<p>Magnitude: " + e.features[0].properties.mag + "<br>Status: " + e.features[0].properties.status + "<br> Tsunami: " + e.features[0].properties.tsunami + "<br>Details: " + "<a target='_blank' href='" + e.features[0].properties.detail + "'>Click here</a>";
+						new mapboxgl.Popup()
+										.setLngLat(coordinates)
+										.setHTML(description)
+										.addTo(map2);
+			});
+			map2.addControl(new mapboxgl.NavigationControl());
+			map2.addControl(new mapboxgl.FullscreenControl());
+			</script>
+			</div>
+			<div class="row2">
+			<div class="column2">
+			<h3><center>Map 1:</center></h3>
+			<p><center>This map shows live data of recorded earthquakes by <a href="https://earthquake.usgs.gov/" target="_blank">USGS.</a> Click on any icon to retrieve information on the magnitude, location, and status of each documented earthquake. USGS has information on both recent and historical earthquakes around the world. This <a href="https://www.usgs.gov/natural-hazards/earthquake-hazards/lists-maps-and-statistics"target="_blank">page</a> for example, has the option to sort through lists, maps, and statistics of earthquakes in the world or just the United States. Statistics are given for earthquakes starting in 1990 and later.</center></p>
+			</div>
+			</div>
+			<p style="margin-left: 40em; margin-bottom: 35em;"><h3><center>Map 2:</center></h3></p>
+			<p><center>This map shows earthquakes that had a magnitude greater than 6.0, or were very significant earthquakes. Click on each earthquake symbolized by the black circles to see location, magnitude, and whether or not the specific earthquake triggered a tsunami or not.<center></p>
+			</body>
+			</div>
+			</div>
+			</html>
